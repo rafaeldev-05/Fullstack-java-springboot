@@ -46,47 +46,61 @@ async function carregarFila() {
         const pessoas = await lerResposta(response);
         desenharTabela(pessoas);
     } catch (error) {
-        corpoTabela.innerHTML = `<tr><td colspan="6">${error.message}</td></tr>`;
+        mostrarEstadoTabela(error.message);
     }
+}
+
+function mostrarEstadoTabela(texto) {
+    corpoTabela.replaceChildren();
+    const celula = corpoTabela.insertRow().insertCell();
+    celula.colSpan = 6;
+    celula.textContent = texto;
 }
 
 function desenharTabela(pessoas) {
     resumoFila.textContent = `${pessoas.length} registered`;
 
     if (pessoas.length === 0) {
-        corpoTabela.innerHTML = '<tr><td colspan="6">Nobody has joined the queue yet.</td></tr>';
+        mostrarEstadoTabela("Nobody has joined the queue yet.");
         return;
     }
 
-    corpoTabela.innerHTML = pessoas.map((pessoa, index) => `
-        <tr>
-            <td>${index + 1}</td>
-            <td>${pessoa.nome}</td>
-            <td>${pessoa.telefone}</td>
-            <td>${Object.hasOwn(serviceLabels, pessoa.tipoAtendimento) ? serviceLabels[pessoa.tipoAtendimento] : pessoa.tipoAtendimento}</td>
-            <td><span class="status ${pessoa.status}">${statusLabels[pessoa.status]}</span></td>
-            <td>
-                <div class="acoes">
-                    ${botaoAtendido(pessoa)}
-                    <button class="botao perigo pequeno" type="button" onclick="removerPessoa(${pessoa.id})">
-                        Remove
-                    </button>
-                </div>
-            </td>
-        </tr>
-    `).join("");
+    corpoTabela.replaceChildren();
+    pessoas.forEach((pessoa, index) => {
+        const linha = corpoTabela.insertRow();
+        const atendimento = Object.hasOwn(serviceLabels, pessoa.tipoAtendimento)
+            ? serviceLabels[pessoa.tipoAtendimento]
+            : pessoa.tipoAtendimento;
+
+        for (const valor of [index + 1, pessoa.nome, pessoa.telefone, atendimento]) {
+            linha.insertCell().textContent = valor;
+        }
+
+        const status = document.createElement("span");
+        status.className = "status";
+        if (Object.hasOwn(statusLabels, pessoa.status)) {
+            status.classList.add(pessoa.status);
+            status.textContent = statusLabels[pessoa.status];
+        }
+        linha.insertCell().append(status);
+
+        const acoes = document.createElement("div");
+        acoes.className = "acoes";
+        if (pessoa.status === "CHAMADO") {
+            acoes.append(criarBotao("Mark as served", "botao pequeno", () => marcarAtendido(pessoa.id)));
+        }
+        acoes.append(criarBotao("Remove", "botao perigo pequeno", () => removerPessoa(pessoa.id)));
+        linha.insertCell().append(acoes);
+    });
 }
 
-function botaoAtendido(pessoa) {
-    if (pessoa.status !== "CHAMADO") {
-        return "";
-    }
-
-    return `
-        <button class="botao pequeno" type="button" onclick="marcarAtendido(${pessoa.id})">
-            Mark as served
-        </button>
-    `;
+function criarBotao(texto, classe, acao) {
+    const botao = document.createElement("button");
+    botao.type = "button";
+    botao.className = classe;
+    botao.textContent = texto;
+    botao.addEventListener("click", acao);
+    return botao;
 }
 
 formFila.addEventListener("submit", async (event) => {
