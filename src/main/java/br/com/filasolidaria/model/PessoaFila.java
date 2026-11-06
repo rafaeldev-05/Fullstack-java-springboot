@@ -12,8 +12,8 @@ import jakarta.persistence.PrePersist;
 import java.time.LocalDateTime;
 
 /**
- * Entidade JPA que representa uma pessoa cadastrada na fila virtual.
- * Os atributos ficam privados para aplicar encapsulamento.
+ * JPA entity for a person registered in the virtual queue.
+ * Fields are private to preserve encapsulation.
  */
 @Entity
 public class PessoaFila {
@@ -49,7 +49,7 @@ public class PessoaFila {
     }
 
     /**
-     * Garante valores iniciais antes de salvar no banco.
+     * Sets defaults before persisting the entry.
      */
     @PrePersist
     public void antesDeSalvar() {

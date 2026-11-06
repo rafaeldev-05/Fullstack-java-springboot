@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * Service concentra as regras de negocio da fila.
+ * Applies the queue business rules.
  */
 @Service
 public class PessoaFilaService {
@@ -41,7 +41,7 @@ public class PessoaFilaService {
     public PessoaFila chamarProximaPessoa() {
         PessoaFila proximaPessoa = repository
                 .findFirstByStatusOrderByDataEntradaAsc(StatusAtendimento.AGUARDANDO)
-                .orElseThrow(() -> new IllegalStateException("Nao ha pessoas aguardando na fila."));
+                .orElseThrow(() -> new IllegalStateException("Nobody is waiting in the queue."));
 
         proximaPessoa.setStatus(StatusAtendimento.CHAMADO);
         return repository.save(proximaPessoa);
@@ -51,7 +51,7 @@ public class PessoaFilaService {
         PessoaFila pessoa = buscarPorId(id);
 
         if (pessoa.getStatus() != StatusAtendimento.CHAMADO) {
-            throw new IllegalStateException("Apenas uma pessoa com status CHAMADO pode ser marcada como ATENDIDO.");
+            throw new IllegalStateException("Only a person who has been called can be marked as served.");
         }
 
         pessoa.setStatus(StatusAtendimento.ATENDIDO);
@@ -65,6 +65,6 @@ public class PessoaFilaService {
 
     private PessoaFila buscarPorId(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Pessoa nao encontrada na fila."));
+                .orElseThrow(() -> new IllegalArgumentException("Person not found in the queue."));
     }
 }

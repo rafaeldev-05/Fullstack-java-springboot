@@ -1,294 +1,73 @@
-# FilaSolidaria
+# Service Queue
 
-FilaSolidaria é um sistema fullstack simples para gerenciamento de fila virtual de atendimento.
+A full-stack web application for managing a first-come, first-served queue. It supports service desks, clinics, barbershops, and other businesses that serve people in order of arrival.
 
-O projeto permite cadastrar pessoas em uma fila, chamar a próxima pessoa por ordem de chegada, finalizar atendimentos e remover cadastros. Ele foi pensado para cenários como clínicas, barbearias, assistências técnicas, secretarias e outros serviços com atendimento por fila.
+## Features
 
-## Funcionalidades
+- Register a person with a name, phone number, and service type.
+- View all entries in arrival order and call the next waiting person.
+- Mark a called person as served or remove an entry from the queue.
+- Track each entry through three states: Waiting, Called, and Served.
 
-- Cadastro de pessoas na fila com nome, telefone e tipo de atendimento.
-- Listagem de todas as pessoas cadastradas.
-- Controle de status do atendimento:
-  - `AGUARDANDO`
-  - `CHAMADO`
-  - `ATENDIDO`
-- Chamada automática da próxima pessoa aguardando.
-- Marcação de pessoa chamada como atendida.
-- Remoção de pessoas da fila.
-- Interface web simples consumindo a API REST.
-- Banco H2 em memória para facilitar execução local.
+## Technology
 
-## Tecnologias Utilizadas
+- **Backend:** Java 17, Spring Boot 3.5, Spring Web, Spring Data JPA, and Bean Validation
+- **Database:** H2 in memory
+- **Frontend:** HTML, CSS, and vanilla JavaScript using the Fetch API
+- **Build:** Maven
 
-### Back-end
+The Spring Boot app serves both the web interface and the REST API. The backend separates the controller, queue rules, and database access into controller, service, and repository layers.
 
-- Java 17
-- Spring Boot 3.5.0
-- Spring Web
-- Spring Data JPA
-- Bean Validation
-- H2 Database
-- Maven
+## Run locally
 
-### Front-end
-
-- HTML
-- CSS
-- JavaScript puro
-- Fetch API para comunicação com o back-end
-
-## Estrutura do Projeto
-
-```text
-ProjetoCompleto
-├── pom.xml
-├── README.md
-└── src
-    ├── main
-    │   ├── java
-    │   │   └── br/com/filasolidaria
-    │   │       ├── controller
-    │   │       ├── dto
-    │   │       ├── model
-    │   │       ├── repository
-    │   │       ├── service
-    │   │       └── FilaSolidariaApplication.java
-    │   └── resources
-    │       ├── application.properties
-    │       └── static
-    │           ├── index.html
-    │           ├── script.js
-    │           └── style.css
-    └── test
-```
-
-## Pré-requisitos
-
-Antes de rodar o projeto, instale:
-
-- Java JDK 17 ou superior
-- Maven 3.8 ou superior
-- Git, caso queira clonar o repositório
-
-Para verificar se Java e Maven estão instalados:
-
-```bash
-java -version
-mvn -version
-```
-
-## Como Baixar o Projeto
-
-Clone o repositório:
+Install JDK 17 or later, Maven 3.8 or later, and Git. Then run:
 
 ```bash
 git clone https://github.com/rafaeldev-05/Fullstack-java-springboot.git
-```
-
-Entre na pasta do projeto:
-
-```bash
 cd Fullstack-java-springboot
-```
-
-## Como Rodar
-
-Na raiz do projeto, execute:
-
-```bash
 mvn spring-boot:run
 ```
 
-Quando a aplicação iniciar, acesse no navegador:
+Open [localhost:8080](http://localhost:8080). To run the existing tests, use `mvn test`.
 
-```text
-http://localhost:8080
-```
+In IntelliJ IDEA, open the folder containing `pom.xml` and load the Maven project if prompted. You can then run `FilaSolidariaApplication` from the editor.
 
-## Como Usar o Sistema
+## Use the queue
 
-### 1. Cadastrar uma Pessoa na Fila
+1. Enter a name and phone number, choose a service, and click **Register**. The new entry starts as **Waiting**.
+2. Click **Call next** to move the earliest waiting entry to **Called**.
+3. Click **Mark as served** to complete a called entry.
+4. Use **Remove** to delete an entry or **Refresh** to reload the list.
 
-Na tela inicial, preencha:
+## REST API
 
-- Nome
-- Telefone
-- Tipo de atendimento
+The API retains its existing routes, request fields, and status values. The web interface displays English labels for them.
 
-Depois clique em `Cadastrar`.
+| Method | Path | Operation |
+| --- | --- | --- |
+| POST | `/api/fila` | Register a person |
+| GET | `/api/fila` | List all entries in arrival order |
+| GET | `/api/fila/aguardando` | List waiting entries in arrival order |
+| PATCH | `/api/fila/chamar-proximo` | Call the next waiting person |
+| PATCH | `/api/fila/{id}/atendido` | Mark a called person as served |
+| DELETE | `/api/fila/{id}` | Remove an entry |
 
-A pessoa será adicionada à fila com o status `AGUARDANDO`.
-
-### 2. Chamar a Próxima Pessoa
-
-Clique no botão `Chamar próximo`.
-
-O sistema busca a primeira pessoa com status `AGUARDANDO`, respeitando a ordem de chegada, e altera o status para `CHAMADO`.
-
-### 3. Finalizar um Atendimento
-
-Quando uma pessoa estiver com status `CHAMADO`, aparecerá o botão `Atendido` na linha dela.
-
-Clique em `Atendido` para alterar o status para `ATENDIDO`.
-
-### 4. Remover uma Pessoa da Fila
-
-Clique em `Remover` na linha da pessoa desejada.
-
-O cadastro será excluído da fila.
-
-### 5. Atualizar a Lista
-
-Clique em `Atualizar` para recarregar a listagem da fila.
-
-## Regras de Negócio
-
-- Toda pessoa cadastrada entra automaticamente com status `AGUARDANDO`.
-- A fila é ordenada pela data e hora de entrada.
-- Apenas pessoas com status `AGUARDANDO` podem ser chamadas.
-- Apenas pessoas com status `CHAMADO` podem ser marcadas como `ATENDIDO`.
-- Nome, telefone e tipo de atendimento são obrigatórios.
-- O banco H2 é em memória, então os dados são apagados quando a aplicação é encerrada.
-
-## Endpoints da API
-
-Base URL:
-
-```text
-http://localhost:8080/api/fila
-```
-
-### Cadastrar Pessoa
-
-```http
-POST /api/fila
-Content-Type: application/json
-```
-
-Exemplo de corpo:
+Example registration request:
 
 ```json
 {
-  "nome": "Ana Silva",
-  "telefone": "(98) 99999-0000",
-  "tipoAtendimento": "Clínica"
+  "nome": "Alex Morgan",
+  "telefone": "(555) 010-1234",
+  "tipoAtendimento": "Clinica"
 }
 ```
 
-Exemplo usando PowerShell:
+The API returns `AGUARDANDO` (Waiting), `CHAMADO` (Called), or `ATENDIDO` (Served). A person must be called before being marked as served.
 
-```powershell
-Invoke-RestMethod `
-  -Uri "http://localhost:8080/api/fila" `
-  -Method Post `
-  -ContentType "application/json" `
-  -Body '{"nome":"Ana Silva","telefone":"(98) 99999-0000","tipoAtendimento":"Clínica"}'
-```
+## Local database
 
-### Listar Todas as Pessoas
+H2 stores entries in memory, so they are cleared when the application stops. To inspect the database while the app is running, open [the H2 console](http://localhost:8080/h2-console). Use the JDBC URL `jdbc:h2:mem:filasolidaria`, username `sa`, and an empty password.
 
-```http
-GET /api/fila
-```
+## Author
 
-PowerShell:
-
-```powershell
-Invoke-RestMethod -Uri "http://localhost:8080/api/fila" -Method Get
-```
-
-### Listar Pessoas Aguardando
-
-```http
-GET /api/fila/aguardando
-```
-
-PowerShell:
-
-```powershell
-Invoke-RestMethod -Uri "http://localhost:8080/api/fila/aguardando" -Method Get
-```
-
-### Chamar Próxima Pessoa
-
-```http
-PATCH /api/fila/chamar-proximo
-```
-
-PowerShell:
-
-```powershell
-Invoke-RestMethod -Uri "http://localhost:8080/api/fila/chamar-proximo" -Method Patch
-```
-
-### Marcar Pessoa como Atendida
-
-```http
-PATCH /api/fila/{id}/atendido
-```
-
-Exemplo:
-
-```powershell
-Invoke-RestMethod -Uri "http://localhost:8080/api/fila/1/atendido" -Method Patch
-```
-
-### Remover Pessoa
-
-```http
-DELETE /api/fila/{id}
-```
-
-Exemplo:
-
-```powershell
-Invoke-RestMethod -Uri "http://localhost:8080/api/fila/1" -Method Delete
-```
-
-## Banco de Dados H2
-
-O projeto usa H2 em memória. Para acessar o console web:
-
-```text
-http://localhost:8080/h2-console
-```
-
-Dados de conexão:
-
-```text
-JDBC URL: jdbc:h2:mem:filasolidaria
-User Name: sa
-Password: deixe vazio
-```
-
-## Principais Classes
-
-- `FilaSolidariaApplication`: classe principal da aplicação Spring Boot.
-- `PessoaFila`: entidade que representa uma pessoa cadastrada na fila.
-- `StatusAtendimento`: enum com os status da fila.
-- `PessoaFilaRequest`: DTO usado para receber dados de cadastro.
-- `PessoaFilaRepository`: camada de acesso aos dados.
-- `PessoaFilaService`: camada com as regras de negócio.
-- `PessoaFilaController`: controller REST da API.
-- `ApiExceptionHandler`: tratamento centralizado de erros da API.
-
-## Como Rodar os Testes
-
-Execute:
-
-```bash
-mvn test
-```
-
-## Como Abrir no IntelliJ IDEA
-
-1. Abra o IntelliJ IDEA.
-2. Clique em `Open`.
-3. Selecione a pasta do projeto.
-4. Aguarde a importação do Maven.
-5. Execute a classe `FilaSolidariaApplication`.
-6. Acesse `http://localhost:8080`.
-
-## Autor
-
-Projeto desenvolvido para estudo de Java, Spring Boot, API REST, orientação a objetos e integração com front-end simples.
+Rafael Freitas · [GitHub](https://github.com/rafaeldev-05)

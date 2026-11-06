@@ -1,7 +1,7 @@
 package br.com.filasolidaria.model;
 
 /**
- * Enum representa os estados possiveis de uma pessoa dentro da fila.
+ * Possible states for a person in the queue.
  */
 public enum StatusAtendimento {
     AGUARDANDO,

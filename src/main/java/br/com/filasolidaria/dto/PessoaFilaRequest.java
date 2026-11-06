@@ -3,17 +3,17 @@ package br.com.filasolidaria.dto;
 import jakarta.validation.constraints.NotBlank;
 
 /**
- * DTO de entrada: recebe apenas os dados que o usuario pode informar.
+ * Accepts the fields a user can provide when joining the queue.
  */
 public class PessoaFilaRequest {
 
-    @NotBlank(message = "Nome nao pode ser vazio.")
+    @NotBlank(message = "Name is required.")
     private String nome;
 
-    @NotBlank(message = "Telefone nao pode ser vazio.")
+    @NotBlank(message = "Phone number is required.")
     private String telefone;
 
-    @NotBlank(message = "Tipo de atendimento nao pode ser vazio.")
+    @NotBlank(message = "Service type is required.")
     private String tipoAtendimento;
 
     public String getNome() {

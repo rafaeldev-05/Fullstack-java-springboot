@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * Controller expõe a API REST usada pelo frontend.
+ * Exposes the REST API used by the frontend.
  */
 @RestController
 @RequestMapping("/api/fila")

@@ -1,40 +1,40 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FilaSolidaria</title>
+    <title>Service Queue</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="topo">
     <div>
-        <h1>FilaSolidaria</h1>
-        <p>Fila virtual para atendimentos por ordem de chegada.</p>
+        <h1>Service Queue</h1>
+        <p>A virtual queue that serves people in order of arrival.</p>
     </div>
-    <button id="btnChamarProximo" class="botao destaque" type="button">Chamar proximo</button>
+    <button id="btnChamarProximo" class="botao destaque" type="button">Call next</button>
 </header>
 
 <main class="conteudo">
     <section class="painel formulario">
-        <h2>Entrar na fila</h2>
+        <h2>Join the queue</h2>
         <form id="formFila">
-            <label for="nome">Nome</label>
-            <input id="nome" name="nome" type="text" placeholder="Ex.: Ana Silva" required>
+            <label for="nome">Name</label>
+            <input id="nome" name="nome" type="text" placeholder="e.g. Alex Morgan" required>
 
-            <label for="telefone">Telefone</label>
-            <input id="telefone" name="telefone" type="tel" placeholder="Ex.: (98) 99999-0000" required>
+            <label for="telefone">Phone</label>
+            <input id="telefone" name="telefone" type="tel" placeholder="e.g. (555) 010-1234" required>
 
-            <label for="tipoAtendimento">Tipo de atendimento</label>
+            <label for="tipoAtendimento">Service type</label>
             <select id="tipoAtendimento" name="tipoAtendimento" required>
-                <option value="">Selecione</option>
-                <option value="Clinica">Clinica</option>
-                <option value="Barbearia">Barbearia</option>
-                <option value="Assistencia tecnica">Assistencia tecnica</option>
-                <option value="Secretaria">Secretaria</option>
+                <option value="">Select a service</option>
+                <option value="Clinica">Clinic</option>
+                <option value="Barbearia">Barbershop</option>
+                <option value="Assistencia tecnica">Technical support</option>
+                <option value="Secretaria">Administrative office</option>
             </select>
 
-            <button class="botao" type="submit">Cadastrar</button>
+            <button class="botao" type="submit">Register</button>
         </form>
         <p id="mensagem" class="mensagem" aria-live="polite"></p>
     </section>
@@ -42,27 +42,27 @@
     <section class="painel fila">
         <div class="cabecalho-fila">
             <div>
-                <h2>Pessoas na fila</h2>
-                <span id="resumoFila">0 pessoas cadastradas</span>
+                <h2>People in the queue</h2>
+                <span id="resumoFila">0 registered</span>
             </div>
-            <button id="btnAtualizar" class="botao secundario" type="button">Atualizar</button>
+            <button id="btnAtualizar" class="botao secundario" type="button">Refresh</button>
         </div>
 
         <div class="tabela-container">
             <table>
                 <thead>
                 <tr>
-                    <th>Posicao</th>
-                    <th>Nome</th>
-                    <th>Telefone</th>
-                    <th>Atendimento</th>
+                    <th>Position</th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Service</th>
                     <th>Status</th>
-                    <th>Acoes</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody id="corpoTabela">
                 <tr>
-                    <td colspan="6">Carregando fila...</td>
+                    <td colspan="6">Loading queue…</td>
                 </tr>
                 </tbody>
             </table>

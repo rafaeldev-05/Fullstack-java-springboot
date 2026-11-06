@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * DTO simples para padronizar respostas de erro da API.
+ * Standardizes API error responses.
  */
 public class ErroResponse {
 

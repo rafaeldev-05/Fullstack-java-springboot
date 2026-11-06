@@ -1,5 +1,18 @@
 const API_URL = "/api/fila";
 
+const statusLabels = {
+    AGUARDANDO: "Waiting",
+    CHAMADO: "Called",
+    ATENDIDO: "Served"
+};
+
+const serviceLabels = {
+    Clinica: "Clinic",
+    Barbearia: "Barbershop",
+    "Assistencia tecnica": "Technical support",
+    Secretaria: "Administrative office"
+};
+
 const formFila = document.getElementById("formFila");
 const mensagem = document.getElementById("mensagem");
 const corpoTabela = document.getElementById("corpoTabela");
@@ -20,7 +33,7 @@ async function lerResposta(response) {
     const conteudo = await response.json();
 
     if (!response.ok) {
-        const erro = conteudo.mensagens ? conteudo.mensagens.join(" ") : "Erro inesperado.";
+        const erro = conteudo.mensagens ? conteudo.mensagens.join(" ") : "Unexpected error.";
         throw new Error(erro);
     }
 
@@ -38,10 +51,10 @@ async function carregarFila() {
 }
 
 function desenharTabela(pessoas) {
-    resumoFila.textContent = `${pessoas.length} pessoa(s) cadastrada(s)`;
+    resumoFila.textContent = `${pessoas.length} registered`;
 
     if (pessoas.length === 0) {
-        corpoTabela.innerHTML = '<tr><td colspan="6">Nenhuma pessoa cadastrada.</td></tr>';
+        corpoTabela.innerHTML = '<tr><td colspan="6">Nobody has joined the queue yet.</td></tr>';
         return;
     }
 
@@ -50,13 +63,13 @@ function desenharTabela(pessoas) {
             <td>${index + 1}</td>
             <td>${pessoa.nome}</td>
             <td>${pessoa.telefone}</td>
-            <td>${pessoa.tipoAtendimento}</td>
-            <td><span class="status ${pessoa.status}">${pessoa.status}</span></td>
+            <td>${Object.hasOwn(serviceLabels, pessoa.tipoAtendimento) ? serviceLabels[pessoa.tipoAtendimento] : pessoa.tipoAtendimento}</td>
+            <td><span class="status ${pessoa.status}">${statusLabels[pessoa.status]}</span></td>
             <td>
                 <div class="acoes">
                     ${botaoAtendido(pessoa)}
                     <button class="botao perigo pequeno" type="button" onclick="removerPessoa(${pessoa.id})">
-                        Remover
+                        Remove
                     </button>
                 </div>
             </td>
@@ -71,7 +84,7 @@ function botaoAtendido(pessoa) {
 
     return `
         <button class="botao pequeno" type="button" onclick="marcarAtendido(${pessoa.id})">
-            Atendido
+            Mark as served
         </button>
     `;
 }
@@ -94,7 +107,7 @@ formFila.addEventListener("submit", async (event) => {
 
         await lerResposta(response);
         formFila.reset();
-        mostrarMensagem("Pessoa cadastrada na fila.", "sucesso");
+        mostrarMensagem("Person added to the queue.", "sucesso");
         carregarFila();
     } catch (error) {
         mostrarMensagem(error.message, "erro");
@@ -105,7 +118,7 @@ btnChamarProximo.addEventListener("click", async () => {
     try {
         const response = await fetch(`${API_URL}/chamar-proximo`, { method: "PATCH" });
         const pessoa = await lerResposta(response);
-        mostrarMensagem(`${pessoa.nome} foi chamado(a).`, "sucesso");
+        mostrarMensagem(`${pessoa.nome} has been called.`, "sucesso");
         carregarFila();
     } catch (error) {
         mostrarMensagem(error.message, "erro");
@@ -118,7 +131,7 @@ async function marcarAtendido(id) {
     try {
         const response = await fetch(`${API_URL}/${id}/atendido`, { method: "PATCH" });
         await lerResposta(response);
-        mostrarMensagem("Atendimento finalizado.", "sucesso");
+        mostrarMensagem("Service completed.", "sucesso");
         carregarFila();
     } catch (error) {
         mostrarMensagem(error.message, "erro");
@@ -129,7 +142,7 @@ async function removerPessoa(id) {
     try {
         const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
         await lerResposta(response);
-        mostrarMensagem("Pessoa removida da fila.", "sucesso");
+        mostrarMensagem("Person removed from the queue.", "sucesso");
         carregarFila();
     } catch (error) {
         mostrarMensagem(error.message, "erro");

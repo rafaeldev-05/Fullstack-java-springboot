@@ -14,8 +14,8 @@
     <groupId>br.com.filasolidaria</groupId>
     <artifactId>filasolidaria</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>FilaSolidaria</name>
-    <description>Sistema de fila virtual para atendimentos</description>
+    <name>Service Queue</name>
+    <description>Virtual queue for first-come, first-served service</description>
 
     <properties>
         <java.version>17</java.version>

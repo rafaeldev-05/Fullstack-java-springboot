@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Repository isola o acesso ao banco de dados.
- * O Spring Data JPA implementa os metodos automaticamente pelo nome.
+ * Isolates database access.
+ * Spring Data JPA derives queries from method names.
  */
 public interface PessoaFilaRepository extends JpaRepository<PessoaFila, Long> {
 

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.List;
 
 /**
- * Trata erros da API e devolve mensagens amigaveis para o frontend.
+ * Returns readable error messages to the frontend.
  */
 @RestControllerAdvice
 public class ApiExceptionHandler {
